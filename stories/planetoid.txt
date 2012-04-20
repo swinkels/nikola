@@ -1,0 +1,76 @@
+Introduction
+------------
+
+Planetoid is a Nikola addon for creating planet-style sites.
+
+Basically, it aggregates RSS/Atom feeds and creates a blog
+that is a compilation of those feeds. These sites are called
+"planets" because `Planet <http://planetplanet.org>`_ was
+the pioneer software in the field.
+
+Planetoid is being used for `Planeta PyAr <planeta.python.org.ar>`_
+the collection of blogs for Python Argentina.
+
+Unlike other planets, Planetoid will keep the older posts, turning
+into an archive of sorts. Or meaning you have to expire old posts 
+manually ;-)
+
+Requirements
+------------
+
+Planetoid requires `PeeWee <http://charlesleifer.com/docs/peewee/>`_
+
+If you want to use a database other than SQLite (and there is probably no
+need to ever do that) you will have to add support yourself ;-)
+
+Getting Started
+---------------
+
+Planetoid will take a list of feeds from a file called ``feeds``
+in the same folder as your ``dodo.py``. The format is fairly
+simple::
+
+    # Boing Boing feed
+    http://feeds.boingboing.net/boingboing/iBag
+    Boing Boing
+
+    # Nikola News
+    http://nikola.ralsina.com.ar/rss.xml
+    Nikola
+
+* Lines that start with "#" are comments.
+* Empty lines don't matter.
+* One line for a feed (must start with 'http').
+* One line for that feed's name.
+
+Next, you need to enable planetoid on your dodo.py. Just add this line at the end::
+
+    from nikola.planetoid import *
+
+Also, if you want your index pages to provide links to the original posts instead of
+the planetoid copies, you want to set ``THEME="planetoid"`` in ``dodo.py``
+
+Adding that line will give you 3 new tasks:
+
+load_feeds
+    Read the feeds file, add it to the database. You only need to run it if
+    the ``feeds`` file changes. If it's unchanged, it does nothing.
+
+update_feeds
+    Download feed contents, add entries to the database. It tries to be gentle
+    to the servers, only downloading the feed if 20 minutes have passed since
+    the last change, and it also uses etags and if-modified-since to avoid
+    unnecessary downloads. However, don't be annoying, please.
+
+generate_posts
+    Takes the entries you got, and creates Nikola blog posts for each of them.
+    After this, regenerating the site should give you a "planet".
+
+So, assuming all that has been taken care of::
+
+    doit load_feeds
+    doit update_feeds
+    doit generate_posts
+    doit
+
+And you have a planet.

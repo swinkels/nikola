@@ -57,16 +57,16 @@ class Post(object):
                 meta_data = meta_file.readlines()
             while len(meta_data) < 5:
                 meta_data.append("")
-            default_title, default_pagename, self.date, self.tags, self.link = \
+            default_title, default_pagename, self.meta_date, self.tags, self.link = \
                 [x.strip() for x in meta_data][:5]
         else:
-            default_title, default_pagename, self.date, self.tags, self.link = \
+            default_title, default_pagename, self.meta_date, self.tags, self.link = \
                 utils.get_meta(self.source_path)
 
-        if not default_title or not default_pagename or not self.date:
+        if not default_title or not default_pagename or not self.meta_date:
             raise OSError, "You must set a title and slug and date!"
 
-        self.date = utils.to_datetime(self.date)
+        self.date = utils.to_datetime(self.meta_date)
         self.tags = [x.strip() for x in self.tags.split(',')]
         self.tags = filter(None, self.tags)
 
